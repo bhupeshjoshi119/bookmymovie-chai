@@ -4,22 +4,25 @@ import { verifyUserToken } from '../auth/utils/token'
 export function authenticationMiddleware() {
     return function (req: Request, res: Response, next: NextFunction) {
         const header = req.headers['authorization']
-        if (!header) next()
+        // If there's no Authorization header, continue without authenticating.
+        // Important: return here so we don't run the Bearer checks below.
+        if (!header) return next()
 
-        if (!header?.startsWith('Bearer')) {
-            return res.status(400).json({ error: 'authorization header must start with Bearer' })
+        // Expect format: "Bearer <token>"
+        if (!header?.startsWith('Bearer ')) {
+            return res.status(400).json({ error: 'authorization header must start with "Bearer " followed by the token' })
         }
 
         const token = header.split(' ')[1]
 
-        if (!token) return res.status(400).json({ error: 'authorization header must start with Bearer and followed by token' })
+        if (!token) return res.status(400).json({ error: 'authorization header must include a token after "Bearer"' })
 
         const user = verifyUserToken(token)
 
         // @ts-ignore
         req.user = user
 
-        next()
+        return next()
     }
 }
 

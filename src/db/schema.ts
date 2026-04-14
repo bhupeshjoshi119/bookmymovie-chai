@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, text, boolean, timestamp } from 'drizzle-orm/pg-core'
+import { pgTable, uuid, varchar, text, boolean, timestamp,integer } from 'drizzle-orm/pg-core'
 
 
 export const usersTable = pgTable('users', {
@@ -14,5 +14,19 @@ export const usersTable = pgTable('users', {
     salt: text('salt'),
 
     createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),
+})
+
+export const movieBookRoundTable=pgTable('movie',{
+    id: uuid('id').primaryKey().defaultRandom(),
+        userId: uuid('user_id').notNull().references(() => usersTable.id),
+    movieTitle: varchar('movie_title', { length: 255 }).notNull(),
+    showTime: timestamp('show_time').notNull(),
+    seatNumbers: text('seat_numbers').notNull(),
+    seatsCount: integer('seats_count').notNull(),
+    priceCents: integer('price_cents').notNull(),
+
+    status:varchar('status',{length:20}).default('confirmed').notNull(),
+        createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),
 })
