@@ -1,4 +1,4 @@
-# ChaiCode Authentication Service
+# ChaiCode Movie Booking Service
 
 A Node.js backend service for user authentication and movie ticket booking with JWT-based security.
 
